@@ -32,10 +32,9 @@ public class IoC {
 
         @Override
         public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
-            if (methodsToLog.stream().anyMatch(method1 -> method.getName().equals(method1.getName())
-                    && Arrays.equals(method.getParameterTypes(), method1.getParameterTypes()))) {
+            if (methodsToLog.stream().anyMatch(methodToLog -> method.getName().equals(methodToLog.getName())
+                    && Arrays.equals(method.getParameterTypes(), methodToLog.getParameterTypes()))) {
                 System.out.println("Before the play");
-                return method.invoke(game, objects);
             }
             return method.invoke(game, objects);
         }
