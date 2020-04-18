@@ -11,5 +11,5 @@
 Виталий Куценко<br>
 
 ### Студент
-Georgii Ermakov (Георгий Ермаков)
+Georgii Ermakov (Георгий Ермаков)  
 devgeorgiiermakov@gmail.com
