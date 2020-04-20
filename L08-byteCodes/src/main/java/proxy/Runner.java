@@ -3,11 +3,13 @@ package proxy;
 public class Runner {
 
     public static void main(String[] args) {
-        Game game = IoC.createProxy(new MyGame(), Game.class);
+        IoC<Game> proxyMaker = new IoC<>(Game.class);
+        Game game = proxyMaker.createProxy(new MyGame());
         game.play();
         game.play("Ho-ho");
 
-        NotAGameAtAll notAGameAtAll = IoC.createProxy(new MyNotAGameAtAll(), NotAGameAtAll.class);
+        IoC<NotAGameAtAll> anotherProxyMaker = new IoC<>(NotAGameAtAll.class);
+        NotAGameAtAll notAGameAtAll = anotherProxyMaker.createProxy(new MyNotAGameAtAll());
         notAGameAtAll.work();
     }
 }

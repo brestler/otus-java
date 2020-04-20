@@ -8,16 +8,22 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class IoC {
+public class IoC<T> {
+
+    Class<T> type;
+
+    public IoC(Class<T> type) {
+        this.type = type;
+    }
 
     @SuppressWarnings("unchecked")
-    static <T> T createProxy(T proxyThis, Class<T> type) {
+    T createProxy(T proxyThis) {
         InvocationHandler handler = new MyInvocationHandler(proxyThis);
         return (T) Proxy.newProxyInstance(IoC.class.getClassLoader(), new Class<?>[]{type}, handler);
     }
 
 
-    static class MyInvocationHandler<T> implements InvocationHandler {
+    class MyInvocationHandler implements InvocationHandler {
 
         private T targetObject;
         private Set<Method> methodsToLog;
