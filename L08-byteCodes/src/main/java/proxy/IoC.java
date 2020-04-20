@@ -11,9 +11,9 @@ import java.util.Set;
 public class IoC {
 
     @SuppressWarnings("unchecked")
-    static <T> T createProxy(T proxyThis, Class<T> targetInterface) {
+    static <T> T createProxy(T proxyThis, Class<T> type) {
         InvocationHandler handler = new MyInvocationHandler(proxyThis);
-        return (T) Proxy.newProxyInstance(IoC.class.getClassLoader(), new Class<?>[]{targetInterface}, handler);
+        return (T) Proxy.newProxyInstance(IoC.class.getClassLoader(), new Class<?>[]{type}, handler);
     }
 
 
