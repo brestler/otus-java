@@ -10,16 +10,11 @@ import java.util.Set;
 
 public class IoC<T> {
 
-    Class<T> type;
-
-    public IoC(Class<T> type) {
-        this.type = type;
-    }
 
     @SuppressWarnings("unchecked")
     T createProxy(T proxyThis) {
         InvocationHandler handler = new MyInvocationHandler(proxyThis);
-        return (T) Proxy.newProxyInstance(IoC.class.getClassLoader(), new Class<?>[]{type}, handler);
+        return (T) Proxy.newProxyInstance(IoC.class.getClassLoader(), new Class<?>[]{proxyThis.getClass()}, handler);
     }
 
 
