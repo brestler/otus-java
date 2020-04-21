@@ -9,7 +9,6 @@ public class TestRunner {
     public static void runTests(String targetClassName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Class<?> aClass = Class.forName(targetClassName);
         TestClassMethodsContainer container = new TestClassMethodsContainer(aClass);
-        container.init();
         int failedTests = 0;
         for (Method test : container.getTests()) {
             Object testInstance = aClass.getConstructor().newInstance();

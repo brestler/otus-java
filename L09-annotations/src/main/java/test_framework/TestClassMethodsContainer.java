@@ -17,9 +17,6 @@ public class TestClassMethodsContainer {
 
     public TestClassMethodsContainer(Class<?> testClass) {
         this.testClass = testClass;
-    }
-
-    public void init() {
         for (Method method : testClass.getDeclaredMethods()) {
             if (method.getDeclaredAnnotation(BeforeEach.class) != null) {
                 beforeEachMethods.add(method);
