@@ -4,10 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.ermakov</groupId>
+    <groupId>ru.brestler</groupId>
     <artifactId>otus-java</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>L08-byteCodes</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>1.11</maven.compiler.source>
