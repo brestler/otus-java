@@ -10,13 +10,11 @@ import java.util.List;
 
 public class TestClassMethodsContainer {
 
-    private Class<?> testClass;
     private List<Method> beforeEachMethods = new ArrayList<>();
     private List<Method> afterEachMethods = new ArrayList<>();
     private List<Method> tests = new ArrayList<>();
 
     public TestClassMethodsContainer(Class<?> testClass) {
-        this.testClass = testClass;
         for (Method method : testClass.getDeclaredMethods()) {
             if (method.getDeclaredAnnotation(BeforeEach.class) != null) {
                 beforeEachMethods.add(method);
