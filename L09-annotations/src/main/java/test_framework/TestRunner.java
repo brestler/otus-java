@@ -15,7 +15,7 @@ public class TestRunner {
             invokeAll(container.getBeforeEachMethods(), testInstance);
             try {
                 test.invoke(testInstance);
-            } catch (Exception e) {
+            } catch (InvocationTargetException e) {
                 failedTests++;
             }
             invokeAll(container.getAfterEachMethods(), testInstance);
