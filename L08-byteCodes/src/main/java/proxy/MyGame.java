@@ -1,6 +1,12 @@
 package proxy;
 
-public class MyGame implements Game {
+public class MyGame implements Game, Other {
+
+    @Log
+    @Override
+    public void doOther() {
+        System.out.println("Other");
+    }
 
     @Log
     @Override

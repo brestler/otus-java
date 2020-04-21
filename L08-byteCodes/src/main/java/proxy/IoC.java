@@ -11,9 +11,9 @@ import java.util.Set;
 public class IoC {
 
     @SuppressWarnings("unchecked")
-    static <T> T createProxy(T proxyThis, Class<T> targetInterface) {
+    static <T> T createProxy(T proxyThis) {
         InvocationHandler handler = new MyInvocationHandler(proxyThis);
-        return (T) Proxy.newProxyInstance(IoC.class.getClassLoader(), new Class<?>[]{targetInterface}, handler);
+        return (T) Proxy.newProxyInstance(IoC.class.getClassLoader(), proxyThis.getClass().getInterfaces(), handler);
     }
 
 
@@ -35,7 +35,7 @@ public class IoC {
         @Override
         public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
             if (shouldLogBeforeInvocation(method)) {
-                System.out.println("Before the play");
+                System.out.println("Before action");
             }
             return method.invoke(targetObject, objects);
         }
