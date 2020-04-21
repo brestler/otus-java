@@ -27,15 +27,9 @@ public class TestRunner {
         System.out.printf("Failed: %d\n", failedTests);
     }
 
-    private static void invokeAll(List<Method> methods, Object instance) {
-        methods.forEach(method -> invokeAndRethrowRuntime(method, instance));
-    }
-
-    private static void invokeAndRethrowRuntime(Method method, Object instance) {
-        try {
+    private static void invokeAll(List<Method> methods, Object instance) throws InvocationTargetException, IllegalAccessException {
+        for (Method method : methods) {
             method.invoke(instance);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
         }
     }
 }
