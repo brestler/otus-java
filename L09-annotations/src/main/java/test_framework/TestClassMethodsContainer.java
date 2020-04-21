@@ -10,9 +10,9 @@ import java.util.List;
 
 public class TestClassMethodsContainer {
 
-    private List<Method> beforeEachMethods = new ArrayList<>();
-    private List<Method> afterEachMethods = new ArrayList<>();
-    private List<Method> tests = new ArrayList<>();
+    private final List<Method> beforeEachMethods = new ArrayList<>();
+    private final List<Method> afterEachMethods = new ArrayList<>();
+    private final List<Method> tests = new ArrayList<>();
 
     public TestClassMethodsContainer(Class<?> testClass) {
         for (Method method : testClass.getDeclaredMethods()) {
