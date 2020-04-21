@@ -14,7 +14,6 @@ public class TestClassMethodsContainer {
     private List<Method> beforeEachMethods = new ArrayList<>();
     private List<Method> afterEachMethods = new ArrayList<>();
     private List<Method> tests = new ArrayList<>();
-    private int totalTestsCount = 0;
 
     public TestClassMethodsContainer(Class<?> testClass) {
         this.testClass = testClass;
@@ -28,7 +27,6 @@ public class TestClassMethodsContainer {
                 afterEachMethods.add(method);
             } else if (method.getDeclaredAnnotation(Test.class) != null) {
                 tests.add(method);
-                totalTestsCount++;
             }
         }
     }
@@ -46,6 +44,6 @@ public class TestClassMethodsContainer {
     }
 
     public int getTotalTestsCount() {
-        return totalTestsCount;
+        return tests.size();
     }
 }
