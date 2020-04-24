@@ -5,8 +5,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static atm.components.Banknote.*;
-
 public class CellsManager {
 
     private Map<Banknote, Cell> cells;
@@ -17,12 +15,12 @@ public class CellsManager {
         CellFactory factory = new CellFactory(amountListener);
         EnumMap<Banknote, Cell> initialCells = new EnumMap<>(Banknote.class);
         // default initial amount in ATM
-        initialCells.put(TEN, factory.createCell(TEN, 500));
-        initialCells.put(Banknote.FIFTY, factory.createCell(FIFTY, 500));
-        initialCells.put(Banknote.HUNDRED, factory.createCell(HUNDRED, 500));
-        initialCells.put(Banknote.FIVE_HUNDRED, factory.createCell(FIVE_HUNDRED, 500));
-        initialCells.put(Banknote.THOUSAND, factory.createCell(THOUSAND, 500));
-        initialCells.put(Banknote.FIVE_THOUSAND, factory.createCell(FIVE_THOUSAND, 500));
+        initialCells.put(Banknote.TEN, factory.createCell(Banknote.TEN, 500));
+        initialCells.put(Banknote.FIFTY, factory.createCell(Banknote.FIFTY, 500));
+        initialCells.put(Banknote.HUNDRED, factory.createCell(Banknote.HUNDRED, 500));
+        initialCells.put(Banknote.FIVE_HUNDRED, factory.createCell(Banknote.FIVE_HUNDRED, 500));
+        initialCells.put(Banknote.THOUSAND, factory.createCell(Banknote.THOUSAND, 500));
+        initialCells.put(Banknote.FIVE_THOUSAND, factory.createCell(Banknote.FIVE_THOUSAND, 500));
         cells = Collections.unmodifiableMap(initialCells);
     }
 
@@ -41,20 +39,17 @@ public class CellsManager {
 
     public boolean put(StackOfBanknotes banknotes) {
         Cell cell = cells.get(banknotes.getType());
-        if (cell.add(banknotes.getCount())) {
-            amountListener.add(banknotes);
-            return true;
-        }
-        return false;
+        return cell.add(banknotes.getCount());
     }
 
     public boolean withdraw(StackOfBanknotes banknotes) {
         Cell cell = cells.get(banknotes.getType());
-        if (cell.withdraw(banknotes.getCount())) {
-            amountListener.withdraw(banknotes);
-            return true;
-        }
-        return false;
+        return cell.withdraw(banknotes.getCount());
+    }
+
+    public int withdrawAll(Banknote banknoteType) {
+        Cell cell = cells.get(banknoteType);
+        return cell.withdrawAll();
     }
 
     public int getBanknoteCountAvailable(Banknote banknoteType) {

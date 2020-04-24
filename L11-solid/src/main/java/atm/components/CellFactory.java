@@ -9,8 +9,6 @@ public class CellFactory {
     }
 
     public Cell createCell(Banknote banknoteType, int count) {
-        Cell cell = new RegularCell(count);
-        amountListener.add(banknoteType, count);
-        return cell;
+        return new RegularCell(banknoteType, count, amountListener);
     }
 }

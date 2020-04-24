@@ -85,7 +85,7 @@ public class RegularATM implements ATM {
                     "Please try other nominals");
         }
 
-        if (amount < TEN.getNominal() && amount > 0) {
+        if (amount < TEN.getNominal()) {
             logger.warn("Minimal banknote nominal is 10 but you've requested " + backupAmount +
                     ". Additional " + amount + " won't be withdrawn");
         }
