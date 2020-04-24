@@ -9,11 +9,9 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>L09-annotations</module>
-    </modules>
-
-    <modules>
         <module>L08-byteCodes</module>
+        <module>L09-annotations</module>
+        <module>L11-solid</module>
     </modules>
 
     <properties>
