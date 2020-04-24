@@ -37,14 +37,14 @@ public class CellsManager {
         cells = Collections.unmodifiableMap(cellMap);
     }
 
-    public boolean put(StackOfBanknotes unit) {
-        Cell cell = cells.get(unit.getType());
-        return cell.add(unit.getCount());
+    public boolean put(StackOfBanknotes banknotes) {
+        Cell cell = cells.get(banknotes.getType());
+        return cell.add(banknotes.getCount());
     }
 
-    public boolean withdraw(StackOfBanknotes unit) {
-        Cell cell = cells.get(unit.getType());
-        return cell.withdraw(unit.getCount());
+    public boolean withdraw(StackOfBanknotes banknotes) {
+        Cell cell = cells.get(banknotes.getType());
+        return cell.withdraw(banknotes.getCount());
     }
 
     public int withdrawAll(Banknote banknoteType) {
