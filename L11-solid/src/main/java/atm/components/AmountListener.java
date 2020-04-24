@@ -1,6 +1,5 @@
 package atm.components;
 
-// enum - easy way to implement singletone
 public class AmountListener {
 
     private int totalAmount = 0;
