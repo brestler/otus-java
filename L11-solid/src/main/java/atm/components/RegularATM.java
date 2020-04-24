@@ -32,7 +32,7 @@ public class RegularATM implements ATM {
             if (!cellsManager.put(stackOfBanknotes)) {
                 // if some cell is overfilled, rollback everything (return the money) and show an error
                 rollBack(processed);
-                throw new ATMException("Cell with " + stackOfBanknotes.getType() + "'s is overfilled. " +
+                throw new ATMException("RegularCell with " + stackOfBanknotes.getType() + "'s is overfilled. " +
                         "Please use other nominals or come back later :)");
             }
             processed.add(stackOfBanknotes);
