@@ -4,10 +4,7 @@ import atm.ATM;
 import atm.exceptions.ATMException;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static atm.components.Banknote.TEN;
 import static atm.components.StackOfBanknotes.singleBanknoteStack;
@@ -29,9 +26,9 @@ public class RegularATM implements ATM {
 
     @Override
     public void accept(List<Banknote> banknotes) {
-        Map<Banknote, StackOfBanknotes> stacks = transformToStacksOfBanknotes(banknotes);
+        Collection<StackOfBanknotes> stacks = transformToStacksOfBanknotes(banknotes);
         List<StackOfBanknotes> processed = new ArrayList<>();
-        for (StackOfBanknotes stackOfBanknotes : stacks.values()) {
+        for (StackOfBanknotes stackOfBanknotes : stacks) {
             if (!cellsManager.put(stackOfBanknotes)) {
                 // if some cell is overfilled, rollback everything (return the money) and show an error
                 rollBack(processed);
@@ -42,13 +39,13 @@ public class RegularATM implements ATM {
         }
     }
 
-    private Map<Banknote, StackOfBanknotes> transformToStacksOfBanknotes(List<Banknote> banknotes) {
+    private Collection<StackOfBanknotes> transformToStacksOfBanknotes(List<Banknote> banknotes) {
         Map<Banknote, StackOfBanknotes> stacks = new HashMap<>();
         for (Banknote banknoteType : banknotes) {
             stacks.merge(banknoteType, singleBanknoteStack(banknoteType),
                     (oldVal, newVal) -> stackOfBanknotes(banknoteType, oldVal.getCount() + newVal.getCount()));
         }
-        return stacks;
+        return stacks.values();
     }
 
     private void rollBack(List<StackOfBanknotes> stacks) {
