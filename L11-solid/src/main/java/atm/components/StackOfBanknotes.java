@@ -18,22 +18,6 @@ public class StackOfBanknotes {
         this.banknoteCount = banknoteCount;
     }
 
-    public void add(int count) {
-        banknoteCount += count;
-    }
-
-    public void remove(int count) {
-        banknoteCount -= count;
-    }
-
-    public void removeAll() {
-        banknoteCount = 0;
-    }
-
-    public int getMoneyAmount() {
-        return banknoteType.getNominal() * banknoteCount;
-    }
-
     public Banknote getType() {
         return banknoteType;
     }

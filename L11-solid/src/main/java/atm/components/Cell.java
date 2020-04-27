@@ -4,6 +4,5 @@ public interface Cell {
 
     boolean add(int count);
     boolean withdraw(int count);
-    int withdrawAll();
     int getBanknoteCount();
 }

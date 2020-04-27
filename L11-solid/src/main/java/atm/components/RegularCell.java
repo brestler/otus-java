@@ -38,14 +38,6 @@ class RegularCell implements Cell {
     }
 
     @Override
-    public int withdrawAll() {
-        int was = this.count;
-        this.count = 0;
-        amountListener.withdraw(banknoteType, was);
-        return was;
-    }
-
-    @Override
     public int getBanknoteCount() {
         return this.count;
     }

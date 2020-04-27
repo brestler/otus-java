@@ -5,6 +5,7 @@ import atm.exceptions.ATMException;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static atm.components.Banknote.TEN;
 import static atm.components.StackOfBanknotes.singleBanknoteStack;
@@ -14,14 +15,34 @@ public class RegularATM implements ATM {
 
     private static final Logger logger = Logger.getLogger(RegularATM.class);
 
-    private CellsManager cellsManager;
+    private Map<Banknote, Cell> cells;
+    private AmountListener amountListener;
 
     public RegularATM() {
-        cellsManager = new CellsManager();
+        amountListener = new AmountListener();
+        CellFactory factory = new CellFactory(amountListener);
+        EnumMap<Banknote, Cell> initialCells = new EnumMap<>(Banknote.class);
+        // default initial amount in ATM
+        initialCells.put(Banknote.TEN, factory.createCell(Banknote.TEN, 500));
+        initialCells.put(Banknote.FIFTY, factory.createCell(Banknote.FIFTY, 500));
+        initialCells.put(Banknote.HUNDRED, factory.createCell(Banknote.HUNDRED, 500));
+        initialCells.put(Banknote.FIVE_HUNDRED, factory.createCell(Banknote.FIVE_HUNDRED, 500));
+        initialCells.put(Banknote.THOUSAND, factory.createCell(Banknote.THOUSAND, 500));
+        initialCells.put(Banknote.FIVE_THOUSAND, factory.createCell(Banknote.FIVE_THOUSAND, 500));
+        cells = Collections.unmodifiableMap(initialCells);
     }
 
     public RegularATM(Map<Banknote, Integer> initialMoney) {
-        cellsManager = new CellsManager(initialMoney);
+        amountListener = new AmountListener();
+        CellFactory factory = new CellFactory(amountListener);
+        Map<Banknote, Cell> cellMap = initialMoney.entrySet().stream().
+                collect(Collectors.toMap(Map.Entry::getKey, e -> factory.createCell(e.getKey(), e.getValue())));
+
+        for (Banknote banknoteType : Banknote.values()) {
+            //initialize cells with each banknoteType type, regardless of what was the initial input
+            cellMap.computeIfAbsent(banknoteType, key -> factory.createCell(banknoteType, 0));
+        }
+        cells = Collections.unmodifiableMap(cellMap);
     }
 
     @Override
@@ -29,7 +50,8 @@ public class RegularATM implements ATM {
         Collection<StackOfBanknotes> stacks = transformToStacksOfBanknotes(banknotes);
         List<StackOfBanknotes> processed = new ArrayList<>();
         for (StackOfBanknotes stackOfBanknotes : stacks) {
-            if (!cellsManager.put(stackOfBanknotes)) {
+            Cell cell = cells.get(stackOfBanknotes.getType());
+            if (!cell.add(stackOfBanknotes.getCount())) {
                 // if some cell is overfilled, rollback everything (return the money) and show an error
                 rollBack(processed);
                 throw new ATMException("RegularCell with " + stackOfBanknotes.getType() + "'s is overfilled. " +
@@ -50,7 +72,8 @@ public class RegularATM implements ATM {
 
     private void rollBack(List<StackOfBanknotes> stacks) {
         for (StackOfBanknotes stackOfBanknotes : stacks) {
-            cellsManager.withdraw(stackOfBanknotes);
+            Cell cell = cells.get(stackOfBanknotes.getType());
+            cell.withdraw(stackOfBanknotes.getCount());
         }
     }
 
@@ -64,7 +87,7 @@ public class RegularATM implements ATM {
         Map<Banknote, Integer> result = new HashMap<>();
         for (Banknote banknoteType : Banknote.values()) {
             int nominal = banknoteType.getNominal();
-            int availableCount = cellsManager.getBanknoteCountAvailable(banknoteType);
+            int availableCount = cells.get(banknoteType).getBanknoteCount();
             if (amount == 0)
                 break;
             int countNeeded = amount / nominal;
@@ -92,13 +115,14 @@ public class RegularATM implements ATM {
 
         // withdraw only if able to return the amount
         for (Map.Entry<Banknote, Integer> entry : result.entrySet()) {
-            cellsManager.withdraw(stackOfBanknotes(entry.getKey(), entry.getValue()));
+            Cell cell = cells.get(entry.getKey());
+            cell.withdraw(entry.getValue());
         }
         return result;
     }
 
     @Override
     public int amountLeft() {
-        return cellsManager.getTotalAmount();
+        return amountListener.getTotalAmount();
     }
 }
