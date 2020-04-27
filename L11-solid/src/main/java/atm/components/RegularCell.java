@@ -38,6 +38,11 @@ class RegularCell implements Cell {
     }
 
     @Override
+    public Banknote getBanknoteType() {
+        return banknoteType;
+    }
+
+    @Override
     public int getBanknoteCount() {
         return this.count;
     }
