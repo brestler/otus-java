@@ -1,4 +1,6 @@
-package atm.components;
+package atm;
+
+import atm.components.Banknote;
 
 public interface Cell {
 

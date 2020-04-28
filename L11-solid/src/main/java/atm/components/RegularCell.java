@@ -1,5 +1,6 @@
 package atm.components;
 
+import atm.Cell;
 import atm.exceptions.CellOverFilledException;
 
 class RegularCell implements Cell {

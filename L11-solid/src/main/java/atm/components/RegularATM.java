@@ -1,6 +1,7 @@
 package atm.components;
 
 import atm.ATM;
+import atm.Cell;
 import atm.exceptions.ATMException;
 import org.apache.log4j.Logger;
 
@@ -15,12 +16,11 @@ public class RegularATM implements ATM {
 
     private static final Logger logger = Logger.getLogger(RegularATM.class);
 
-    private Map<Banknote, Cell> cells;
-    private AmountListener amountListener;
+    private final Map<Banknote, Cell> cells;
+    private final AmountListener amountListener = new AmountListener();
+    private final CellFactory factory = new CellFactory(amountListener);
 
     public RegularATM() {
-        amountListener = new AmountListener();
-        CellFactory factory = new CellFactory(amountListener);
         EnumMap<Banknote, Cell> initialCells = new EnumMap<>(Banknote.class);
         // default initial amount in ATM
         initialCells.put(Banknote.TEN, factory.createCell(Banknote.TEN, 500));
@@ -33,8 +33,6 @@ public class RegularATM implements ATM {
     }
 
     public RegularATM(Map<Banknote, Integer> initialMoney) {
-        amountListener = new AmountListener();
-        CellFactory factory = new CellFactory(amountListener);
         Map<Banknote, Cell> cellMap = initialMoney.entrySet().stream().
                 collect(Collectors.toMap(Map.Entry::getKey, e -> factory.createCell(e.getKey(), e.getValue())));
 
@@ -43,6 +41,17 @@ public class RegularATM implements ATM {
             cellMap.computeIfAbsent(banknoteType, key -> factory.createCell(banknoteType, 0));
         }
         cells = Collections.unmodifiableMap(cellMap);
+    }
+
+    RegularATM(RegularATM atm) {
+        Map<Banknote, Cell> oldSells = atm.getCells();
+        Map<Banknote, Cell> copy = new HashMap<>();
+        oldSells.forEach((k, v) -> copy.put(k, factory.createCell(k, v.getBanknoteCount())));
+        cells = copy;
+    }
+
+    private Map<Banknote, Cell> getCells() {
+        return cells;
     }
 
     @Override
@@ -108,7 +117,7 @@ public class RegularATM implements ATM {
                     "Please try other nominals");
         }
 
-        if (amount < TEN.getNominal()) {
+        if (amount < TEN.getNominal() && amount > 0) {
             logger.warn("Minimal banknote nominal is 10 but you've requested " + backupAmount +
                     ". Additional " + amount + " won't be withdrawn");
         }

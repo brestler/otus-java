@@ -1,5 +1,7 @@
 package atm.components;
 
+import atm.Cell;
+
 public class CellFactory {
 
     private AmountListener amountListener;
