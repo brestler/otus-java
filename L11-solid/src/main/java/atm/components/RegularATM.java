@@ -16,11 +16,13 @@ public class RegularATM implements ATM {
 
     private static final Logger logger = Logger.getLogger(RegularATM.class);
 
+    private final int id;
     private final Map<Banknote, Cell> cells;
-    private final AmountListener amountListener = new AmountListener();
-    private final CellFactory factory = new CellFactory(amountListener);
+    private final Amount amount = new Amount();
+    private final CellFactory factory = new CellFactory(amount);
 
-    public RegularATM() {
+    public RegularATM(int id) {
+        this.id = id;
         EnumMap<Banknote, Cell> initialCells = new EnumMap<>(Banknote.class);
         // default initial amount in ATM
         initialCells.put(Banknote.TEN, factory.createCell(Banknote.TEN, 500));
@@ -32,7 +34,8 @@ public class RegularATM implements ATM {
         cells = Collections.unmodifiableMap(initialCells);
     }
 
-    public RegularATM(Map<Banknote, Integer> initialMoney) {
+    public RegularATM(int id, Map<Banknote, Integer> initialMoney) {
+        this.id = id;
         Map<Banknote, Cell> cellMap = initialMoney.entrySet().stream().
                 collect(Collectors.toMap(Map.Entry::getKey, e -> factory.createCell(e.getKey(), e.getValue())));
 
@@ -43,15 +46,24 @@ public class RegularATM implements ATM {
         cells = Collections.unmodifiableMap(cellMap);
     }
 
-    RegularATM(RegularATM atm) {
-        Map<Banknote, Cell> oldSells = atm.getCells();
-        Map<Banknote, Cell> copy = new HashMap<>();
-        oldSells.forEach((k, v) -> copy.put(k, factory.createCell(k, v.getBanknoteCount())));
-        cells = copy;
+    @Override
+    public void updateCells(Map<Banknote, Integer> snapshot) {
+        for (Map.Entry<Banknote, Integer> entry : snapshot.entrySet()) {
+            Cell cell = cells.get(entry.getKey());
+            cell.withdrawAll();
+            cell.add(entry.getValue());
+        }
     }
 
-    private Map<Banknote, Cell> getCells() {
-        return cells;
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    Map<Banknote, Integer> getSnapshot() {
+        return cells.entrySet().stream().
+                collect(Collectors.toMap(entry -> entry.getKey(),
+                        entry -> entry.getValue().getBanknoteCount()));
     }
 
     @Override
@@ -132,6 +144,6 @@ public class RegularATM implements ATM {
 
     @Override
     public int amountLeft() {
-        return amountListener.getTotalAmount();
+        return amount.getTotalAmount();
     }
 }

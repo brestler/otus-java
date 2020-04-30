@@ -23,7 +23,7 @@ class RegularATMTest {
     @ParameterizedTest
     @MethodSource("provideBanknotesList")
     void shouldAcceptBanknotes(List<Banknote> banknotes, int totalAmountExpected) {
-        ATM atm = new RegularATM(emptyMap());
+        ATM atm = new RegularATM(1, emptyMap());
         assertEquals(0, atm.amountLeft());
         atm.accept(banknotes);
         assertEquals(totalAmountExpected, atm.amountLeft());
@@ -39,7 +39,7 @@ class RegularATMTest {
 
     @Test
     void shouldThrowExceptionAndRollBackAmountWhenCellIsOverFilled() {
-        ATM atm = new RegularATM(Map.of(TEN, 999));
+        ATM atm = new RegularATM(1, Map.of(TEN, 999));
         assertEquals(9990, atm.amountLeft());
         assertThrows(ATMException.class, () -> atm.accept(List.of(HUNDRED, TEN, TEN)));
         assertEquals(9990, atm.amountLeft());
@@ -47,14 +47,14 @@ class RegularATMTest {
 
     @Test
     void shouldThrowExceptionIfRequestedAmountIsMoreThenLeft() {
-        ATM atm = new RegularATM(Map.of(TEN, 1));
+        ATM atm = new RegularATM(1, Map.of(TEN, 1));
         assertEquals(10, atm.amountLeft());
         assertThrows(ATMException.class, () -> atm.withdraw(100));
     }
 
     @Test
     void shouldReduceAmount() {
-        ATM atm = new RegularATM(Map.of(TEN, 10));
+        ATM atm = new RegularATM(1, Map.of(TEN, 10));
         assertEquals(100, atm.amountLeft());
         atm.withdraw(10);
         assertEquals(90, atm.amountLeft());
@@ -62,7 +62,7 @@ class RegularATMTest {
 
     @Test
     void shouldReduceAmountUsingDifferentBanknotes() {
-        ATM atm = new RegularATM(Map.of(FIFTY, 1, TEN, 10));
+        ATM atm = new RegularATM(1, Map.of(FIFTY, 1, TEN, 10));
         assertEquals(150, atm.amountLeft());
         Map<Banknote, Integer> result = atm.withdraw(85);
         assertEquals(1, result.get(FIFTY));
@@ -71,13 +71,13 @@ class RegularATMTest {
 
     @Test
     void shouldThrowExceptionIfCantReturnAmountWithAvailableNominals() {
-        ATM atm = new RegularATM(Map.of(FIFTY, 1, TEN, 2));
+        ATM atm = new RegularATM(1, Map.of(FIFTY, 1, TEN, 2));
         assertThrows(ATMException.class, () -> atm.withdraw(40));
     }
 
     @Test
     void shouldIgnoreAmountLessThenTen() {
-        ATM atm = new RegularATM(Map.of(TEN, 2));
+        ATM atm = new RegularATM(1, Map.of(TEN, 2));
         Map<Banknote, Integer> result = atm.withdraw(15);
         assertEquals(1, result.get(TEN));
         assertEquals(10, atm.amountLeft());

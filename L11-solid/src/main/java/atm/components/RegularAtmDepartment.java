@@ -1,24 +1,26 @@
 package atm.components;
 
 import atm.ATM;
-import atm.ATMDepartment;
+import atm.AtmDepartment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegularATMDepartment implements ATMDepartment {
+public class RegularAtmDepartment implements AtmDepartment {
 
-    private List<RegularATM> atms;
-    private RegularATMStateSaver stateSaver;
+    private final List<RegularATM> atms;
+    private final ResetCommand resetCommand;
 
-    public RegularATMDepartment(int countOfAtms) {
+    public RegularAtmDepartment(int countOfAtms) {
+        final AtmMemento atmMemento;
         atms = new ArrayList<>(countOfAtms);
-        stateSaver = new RegularATMStateSaver();
+        atmMemento = new AtmMemento();
         for (int i = 0; i < countOfAtms; i++) {
-            RegularATM atm = new RegularATM();
-            stateSaver.saveState(atm);
+            RegularATM atm = new RegularATM(i);
+            atmMemento.saveState(atm);
             atms.add(atm);
         }
+        resetCommand = new ResetCommand(atmMemento);
     }
 
     @Override
@@ -33,6 +35,6 @@ public class RegularATMDepartment implements ATMDepartment {
 
     @Override
     public void reset() {
-        atms = stateSaver.getInitialStates();
+        atms.forEach(resetCommand::execute);
     }
 }

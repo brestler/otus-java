@@ -4,13 +4,13 @@ import atm.Cell;
 
 public class CellFactory {
 
-    private AmountListener amountListener;
+    private Amount amount;
 
-    public CellFactory(AmountListener amountListener) {
-        this.amountListener = amountListener;
+    public CellFactory(Amount amount) {
+        this.amount = amount;
     }
 
     public Cell createCell(Banknote banknoteType, int count) {
-        return new RegularCell(banknoteType, count, amountListener);
+        return new RegularCell(banknoteType, count, amount);
     }
 }

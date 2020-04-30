@@ -1,18 +1,18 @@
 package atm.components;
 
 import atm.ATM;
-import atm.ATMDepartment;
+import atm.AtmDepartment;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RegularATMDepartmentTest {
+class RegularAtmDepartmentTest {
 
     @Test
     void shouldRestoreState() {
-        ATMDepartment department = new RegularATMDepartment(1);
+        AtmDepartment department = new RegularAtmDepartment(1);
         assertEquals(3330000, department.getAmountLeftFromAllATMs());
         department.getATMs().forEach(atm -> atm.withdraw(10000));
         assertEquals(3320000, department.getAmountLeftFromAllATMs());
@@ -22,7 +22,7 @@ class RegularATMDepartmentTest {
 
     @Test
     void shouldRestoreStateInAllAtms() {
-        ATMDepartment department = new RegularATMDepartment(2);
+        AtmDepartment department = new RegularAtmDepartment(2);
         assertEquals(6660000, department.getAmountLeftFromAllATMs());
         List<ATM> atMs = department.getATMs();
         ATM first = atMs.get(0);

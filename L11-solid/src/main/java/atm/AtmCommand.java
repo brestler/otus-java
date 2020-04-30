@@ -1,6 +1,6 @@
 package atm;
 
-public interface ATMCommand {
+public interface AtmCommand {
 
     void execute(ATM atm);
 }

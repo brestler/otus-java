@@ -2,7 +2,7 @@ package atm;
 
 import java.util.List;
 
-public interface ATMDepartment {
+public interface AtmDepartment {
 
     List<ATM> getATMs();
     long getAmountLeftFromAllATMs();

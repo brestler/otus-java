@@ -1,6 +1,6 @@
 package atm.components;
 
-public class AmountListener {
+public class Amount {
 
     private int totalAmount;
 
