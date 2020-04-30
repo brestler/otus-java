@@ -1,10 +1,11 @@
 package atm.components;
 
 import atm.ATM;
+import atm.AtmCommand;
 
 import java.util.Map;
 
-public class ResetCommand {
+public class ResetCommand implements AtmCommand {
 
     private final AtmMemento atmMemento;
 
