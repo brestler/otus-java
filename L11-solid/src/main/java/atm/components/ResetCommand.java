@@ -13,7 +13,7 @@ public class ResetCommand {
     }
 
     public void execute(ATM atm) {
-        Map<Banknote, Integer> previousState = atmMemento.getHistoryOfAtm(atm.getId()).pop();
+        Map<Banknote, Integer> previousState = atmMemento.getPreviousState(atm.getId());
         atm.updateCells(previousState);
     }
 }

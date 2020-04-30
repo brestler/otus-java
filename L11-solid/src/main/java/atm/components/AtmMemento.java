@@ -14,7 +14,7 @@ public class AtmMemento {
         history.push(atm.getSnapshot());
     }
 
-    public Deque<Map<Banknote, Integer>> getHistoryOfAtm(int id) {
-        return statesHistory.get(id);
+    public Map<Banknote, Integer> getPreviousState(int id) {
+        return statesHistory.get(id).pop();
     }
 }
