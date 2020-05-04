@@ -1,8 +1,8 @@
 package atm.components;
 
-public class AmountListener {
+public class Amount {
 
-    private int totalAmount = 0;
+    private int totalAmount;
 
     public void add(Banknote banknoteType, int count) {
         totalAmount += banknoteType.getNominal() * count;

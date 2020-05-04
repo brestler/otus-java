@@ -1,6 +1,7 @@
 package atm.components;
 
 import atm.ATM;
+import atm.Cell;
 import atm.exceptions.ATMException;
 import org.apache.log4j.Logger;
 
@@ -15,12 +16,14 @@ public class RegularATM implements ATM {
 
     private static final Logger logger = Logger.getLogger(RegularATM.class);
 
-    private Map<Banknote, Cell> cells;
-    private AmountListener amountListener;
+    private final int id;
+    private final Map<Banknote, Cell> cells;
+    private final Amount amount = new Amount();
+    private final CellFactory factory = new CellFactory(amount);
+    private final Deque<Map<Banknote, Integer>> history = new ArrayDeque<>();
 
-    public RegularATM() {
-        amountListener = new AmountListener();
-        CellFactory factory = new CellFactory(amountListener);
+    public RegularATM(int id) {
+        this.id = id;
         EnumMap<Banknote, Cell> initialCells = new EnumMap<>(Banknote.class);
         // default initial amount in ATM
         initialCells.put(Banknote.TEN, factory.createCell(Banknote.TEN, 500));
@@ -32,9 +35,8 @@ public class RegularATM implements ATM {
         cells = Collections.unmodifiableMap(initialCells);
     }
 
-    public RegularATM(Map<Banknote, Integer> initialMoney) {
-        amountListener = new AmountListener();
-        CellFactory factory = new CellFactory(amountListener);
+    public RegularATM(int id, Map<Banknote, Integer> initialMoney) {
+        this.id = id;
         Map<Banknote, Cell> cellMap = initialMoney.entrySet().stream().
                 collect(Collectors.toMap(Map.Entry::getKey, e -> factory.createCell(e.getKey(), e.getValue())));
 
@@ -43,6 +45,20 @@ public class RegularATM implements ATM {
             cellMap.computeIfAbsent(banknoteType, key -> factory.createCell(banknoteType, 0));
         }
         cells = Collections.unmodifiableMap(cellMap);
+    }
+
+    @Override
+    public void updateCells(Map<Banknote, Integer> snapshot) {
+        for (Map.Entry<Banknote, Integer> entry : snapshot.entrySet()) {
+            Cell cell = cells.get(entry.getKey());
+            cell.withdrawAll();
+            cell.add(entry.getValue());
+        }
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     @Override
@@ -108,7 +124,7 @@ public class RegularATM implements ATM {
                     "Please try other nominals");
         }
 
-        if (amount < TEN.getNominal()) {
+        if (amount < TEN.getNominal() && amount > 0) {
             logger.warn("Minimal banknote nominal is 10 but you've requested " + backupAmount +
                     ". Additional " + amount + " won't be withdrawn");
         }
@@ -123,6 +139,22 @@ public class RegularATM implements ATM {
 
     @Override
     public int amountLeft() {
-        return amountListener.getTotalAmount();
+        return amount.getTotalAmount();
+    }
+
+    @Override
+    public void saveState() {
+        history.push(this.getSnapshot());
+    }
+
+    private Map<Banknote, Integer> getSnapshot() {
+        return cells.entrySet().stream().
+                collect(Collectors.toMap(entry -> entry.getKey(),
+                        entry -> entry.getValue().getBanknoteCount()));
+    }
+
+    @Override
+    public Map<Banknote, Integer> getPreviousState() {
+        return history.pop();
     }
 }

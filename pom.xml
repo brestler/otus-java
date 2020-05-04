@@ -12,6 +12,7 @@
         <module>L08-byteCodes</module>
         <module>L09-annotations</module>
         <module>L11-solid</module>
+        <module>L15-io</module>
     </modules>
 
     <properties>
