@@ -20,6 +20,7 @@ public class RegularATM implements ATM {
     private final Map<Banknote, Cell> cells;
     private final Amount amount = new Amount();
     private final CellFactory factory = new CellFactory(amount);
+    private final Deque<Map<Banknote, Integer>> history = new ArrayDeque<>();
 
     public RegularATM(int id) {
         this.id = id;
@@ -58,12 +59,6 @@ public class RegularATM implements ATM {
     @Override
     public int getId() {
         return id;
-    }
-
-    Map<Banknote, Integer> getSnapshot() {
-        return cells.entrySet().stream().
-                collect(Collectors.toMap(entry -> entry.getKey(),
-                        entry -> entry.getValue().getBanknoteCount()));
     }
 
     @Override
@@ -145,5 +140,21 @@ public class RegularATM implements ATM {
     @Override
     public int amountLeft() {
         return amount.getTotalAmount();
+    }
+
+    @Override
+    public void saveState() {
+        history.push(this.getSnapshot());
+    }
+
+    private Map<Banknote, Integer> getSnapshot() {
+        return cells.entrySet().stream().
+                collect(Collectors.toMap(entry -> entry.getKey(),
+                        entry -> entry.getValue().getBanknoteCount()));
+    }
+
+    @Override
+    public Map<Banknote, Integer> getPreviousState() {
+        return history.pop();
     }
 }

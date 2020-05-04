@@ -16,4 +16,8 @@ public interface ATM {
     int getId();
 
     void updateCells(Map<Banknote, Integer> previousState);
+
+    void saveState();
+
+    Map<Banknote, Integer> getPreviousState();
 }

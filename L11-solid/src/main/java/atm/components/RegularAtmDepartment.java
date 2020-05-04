@@ -12,15 +12,13 @@ public class RegularAtmDepartment implements AtmDepartment {
     private final ResetCommand resetCommand;
 
     public RegularAtmDepartment(int countOfAtms) {
-        final AtmMemento atmMemento;
         atms = new ArrayList<>(countOfAtms);
-        atmMemento = new AtmMemento();
+        resetCommand = new ResetCommand();
         for (int i = 0; i < countOfAtms; i++) {
             RegularATM atm = new RegularATM(i);
-            atmMemento.saveState(atm);
+            atm.saveState();
             atms.add(atm);
         }
-        resetCommand = new ResetCommand(atmMemento);
     }
 
     @Override
