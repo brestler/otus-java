@@ -18,7 +18,7 @@ public class QueryCreatorImpl<T> implements QueryCreator<T> {
                 .filter(field -> field.getAnnotation(Id.class) == null)
                 .collect(Collectors.toList());
         List<String> fieldNames = new ArrayList<>();
-        Map<Class<?>, Object> parameters = new HashMap<>();
+        Map<Class<?>, Object> parameters = new LinkedHashMap<>();
         for (Field field : fieldsWithoutId) {
             field.setAccessible(true);
             fieldNames.add(field.getName());

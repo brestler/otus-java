@@ -5,9 +5,9 @@ import ru.otus.core.Id;
 public class Account {
 
     @Id
-    long no;
-    String type;
-    int rest;
+    private long no;
+    private String type;
+    private int rest;
 
     public Account(long no, String type, int rest) {
         this.no = no;
