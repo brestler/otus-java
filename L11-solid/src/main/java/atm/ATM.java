@@ -12,4 +12,12 @@ public interface ATM {
     Map<Banknote, Integer> withdraw(int amount);
 
     int amountLeft();
+
+    int getId();
+
+    void updateCells(Map<Banknote, Integer> previousState);
+
+    void saveState();
+
+    Map<Banknote, Integer> getPreviousState();
 }
